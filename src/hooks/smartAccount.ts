@@ -32,7 +32,7 @@ const vanarTestnetChain = defineChain({
 const vanarMainnetChain = defineChain({
     // vanar testnet
     id: 2040,
-    name: "VANRY_TESTNET",
+    name: "VANAR",
     nativeCurrency: {
         decimals: 18,
         name: "VANRY",
@@ -94,9 +94,9 @@ function useSmartAccount() {
             const smartAccount = await signerToSimpleSmartAccount(publicClient, {
                 signer: smartAccountSigner,
                 entryPoint: ENTRYPOINT_ADDRESS_V07,
-                factoryAddress: '0xd02a5f77c53a3520b92677efcfeda69ac123ebce',
+                factoryAddress: '0x0baDC4D69Ac9e13786C8fC30eB543C3472Fd77EA',
             });
-
+            console.log(smartAccount.address);
             const smartAccountClient = createSmartAccountClient({
                 account: smartAccount,
                 entryPoint: ENTRYPOINT_ADDRESS_V07,
@@ -126,8 +126,8 @@ function useSmartAccount() {
             to,
             value,
             data,
-            maxFeePerGas: BigInt(1000000000),
-            maxPriorityFeePerGas: BigInt(1000000000),
+            maxFeePerGas: BigInt(10^18),
+            maxPriorityFeePerGas: BigInt(10^18),
             account: smartAccountClient.account as unknown as `0x${string}`,
             chain: undefined,
         });
@@ -140,7 +140,7 @@ function useSmartAccount() {
         let retries = 0;
         let resObj = null;
 
-        while (retries < 20) {
+        while (retries < 10) {
             const res = await fetch(`https://api.jiffyscan.xyz/v0/getBundleActivity?bundle=${txHash}&network=vanar-mainnet&first=10&skip=0`, {
                 headers: {
                     "x-api-key": jiffyscanKey,
@@ -153,7 +153,7 @@ function useSmartAccount() {
             } else {
                 console.log("No bundle details found, retrying...");
                 retries++;
-                await new Promise((r) => setTimeout(r, 3000)); // wait for 3 seconds before retrying
+                await new Promise((r) => setTimeout(r, 20000)); // wait for 3 seconds before retrying
             }
         }
 

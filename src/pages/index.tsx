@@ -1,3 +1,5 @@
+
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -32,7 +34,7 @@ const web3auth = new Web3Auth({
 });
 
 function App() {
-    const { provider, setProvider, sendTransaction: sendSmartTransaction, simpleSmartAccount, smartAccountClient } = useSmartAccount();
+    const { provider, setProvider, sendTransaction: sendSmartTransaction, simpleSmartAccount, smartAccountClient, fetchUserOperationHash } = useSmartAccount();
     const [loggedIn, setLoggedIn] = useState(false);
     const [consoleOutput, setConsoleOutput] = useState<string>("");
 
@@ -110,11 +112,11 @@ function App() {
             uiConsole("provider not initialized yet");
             return;
         }
-
+        
         try {
             uiConsole("Sending transaction...");
             const txHash = await sendSmartTransaction("0x0B3074cd5891526420d493B13439f3D4b8be6144", BigInt("0"), "0x");
-            uiConsole("Transaction Receipt:", txHash, "sendTransaction");
+            uiConsole("Transaction Receipt:", txHash, null, "sendTransaction");
         } catch (error) {
             console.error("Error sending transaction:", error);
         }
@@ -150,7 +152,8 @@ function App() {
                     args: [BigInt("50")],
                 })
             );
-            uiConsole("Transaction Receipt:", txHash, "mintTokens");
+            const uoHash = await fetchUserOperationHash(`${txHash}`);
+            uiConsole("Transaction Receipt:", txHash, uoHash, "mintTokens");
         } catch (error) {
             console.error("Error sending transaction:", error);
         }
@@ -187,17 +190,18 @@ function App() {
     };
 
     function uiConsole(...args: any[]): void {
-        const [message, txHash, type] = args;
+        const [message, txHash, uoHash, type] = args;
         let output = `${message}`;
 
         if (txHash) {
             const explorerUrl = "https://explorer.vanarchain.com/tx/";
-            const mintUrl = `https://jiffyscan.xyz/userOpHash/${txHash}?network=vanar-mainnet`;
+            const mintUrl = `https://jiffyscan.xyz/userOpHash/${uoHash}?network=vanar-mainnet`;
             const link = type === "sendTransaction" ? `${explorerUrl}${txHash}` : mintUrl;
             output += `
                 <div class="flex flex-col">
-                <a href="${link}" target="_blank" class="text-blue-500 hover:underline">${txHash}</a>;
-                <button onclick="copyToClipboard('${txHash}')" class="ml-2 btn btn-primary text-gray-100 hover:underline">Copy Hash</button>
+                    <a href="${link}" target="_blank" class="text-blue-500 hover:underline">${txHash}</a>
+                    <button onclick="copyToClipboard('${txHash}')" class="ml-2 btn btn-primary text-gray-100 hover:underline">Copy Hash</button>
+                </div>
                 <script>
                     function copyToClipboard(text) {
                         navigator.clipboard.writeText(text).then(() => {
@@ -207,8 +211,6 @@ function App() {
                         });
                     }
                 </script>
-                </div>
-                
             `;
         }
 
