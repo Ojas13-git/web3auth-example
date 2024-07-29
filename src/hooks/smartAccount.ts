@@ -49,11 +49,11 @@ const vanarMainnetChain = defineChain({
     blockExplorers: {
         default: {
             name: "Explorer",
-            url: "https://explorer-vanguard.vanarchain.com",
+            url: "https://explorer.vanarchain.com",
         },
     },
 })
-const jiffyscanUrl = "https://vanar-testnet.jiffyscan.xyz";
+const jiffyscanUrl = "https://vanar.jiffyscan.xyz";
 const jiffyscanKey = process.env.NEXT_PUBLIC_JIFFYSCAN_API_KEY as string;
 const options: HttpTransportConfig = {
     fetchOptions: {
@@ -78,7 +78,7 @@ function useSmartAccount() {
             const smartAccountSigner = await providerToSmartAccountSigner(provider as EIP1193Provider)
             setSmartAccountSigner(smartAccountSigner);
 
-            const paymasterClient = new JiffyPaymaster(jiffyscanUrl, 78600,
+            const paymasterClient = new JiffyPaymaster(jiffyscanUrl, 2040,
                 {
                     'x-api-key': jiffyscanKey,
                 }
@@ -90,20 +90,20 @@ function useSmartAccount() {
             })
 
             const publicClient = createPublicClient({
-                transport: http("https://rpca-vanguard.vanarchain.com/"),
-                chain: vanarTestnetChain,
+                transport: http("https://rpc.vanarchain.com/"),
+                chain: vanarMainnetChain,
             })
 
             const smartAccount = await signerToSimpleSmartAccount(publicClient, {
                 signer: smartAccountSigner,
                 entryPoint: ENTRYPOINT_ADDRESS_V07,
-                factoryAddress: '0x41f9E11556e0119E452dF67B2311EC46071ad6c7'
+                factoryAddress: '0x0baDC4D69Ac9e13786C8fC30eB543C3472Fd77EA'
             })
 
             const smartAccountClient = createSmartAccountClient({
                 account: smartAccount,
                 entryPoint: ENTRYPOINT_ADDRESS_V07,
-                chain: vanarTestnetChain, // or whatever chain you are using
+                chain: vanarMainnetChain, // or whatever chain you are using
                 bundlerTransport: http(jiffyscanUrl, options),
                 middleware: {
                     sponsorUserOperation: paymasterClient.sponsorUserOperationV7,

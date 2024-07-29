@@ -14,10 +14,10 @@ const clientId = process.env.NEXT_PUBLIC_WEB3AUTH_CLIENT_ID;
 
 const chainConfig = {
     chainNamespace: CHAIN_NAMESPACES.EIP155,
-    chainId: "0x13308", // hex of 19 for Songbird Canary network
-    rpcTarget: "https://rpc-vanguard.vanarchain.com/",
+    chainId: "0x7f8", // hex of 19 for Songbird Canary network
+    rpcTarget: "https://rpc.vanarchain.com/",
     displayName: "Vanar Network",
-    blockExplorerUrl: "https://explorer-vanguard.vanarchain.com/",
+    blockExplorerUrl: "https://explorer.vanarchain.com/",
     ticker: "VANRY",
     tickerName: "VANRY",
     logo: "https://cryptologos.cc/logos/flare-flr-logo.png",
