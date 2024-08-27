@@ -9,20 +9,32 @@ import { EthereumPrivateKeyProvider } from "@web3auth/ethereum-provider";
 import { createPublicClient, createWalletClient, custom, parseUnits, Address, encodeFunctionData } from "viem";
 import { NETWORK_RPC_MAP } from "./constants";
 import useSmartAccount from "@/hooks/smartAccount";
+import { createKernelAccount, createKernelAccountClient, createZeroDevPaymasterClient } from "@zerodev/sdk"
+import { KERNEL_V3_1 } from "@zerodev/sdk/constants"
+import { signerToEcdsaValidator } from "@zerodev/ecdsa-validator"
+import { http, zeroAddress } from "viem"
+import { generatePrivateKey, privateKeyToAccount } from "viem/accounts"
+import { sepolia } from "viem/chains"
+import { ENTRYPOINT_ADDRESS_V07, bundlerActions } from "permissionless"
+
+
 
 const clientId = process.env.NEXT_PUBLIC_WEB3AUTH_CLIENT_ID;
 
 const chainConfig = {
     chainNamespace: CHAIN_NAMESPACES.EIP155,
-    chainId: "0x7f8", // hex of 19 for Songbird Canary network
-    rpcTarget: "https://rpc.vanarchain.com/",
-    displayName: "Vanar Network",
-    blockExplorerUrl: "https://explorer.vanarchain.com/",
-    ticker: "VANRY",
-    tickerName: "VANRY",
+    chainId: "0xa045c", // hex of 19 for Songbird Canary network
+    rpcTarget: "https://rpc.open-campus-codex.gelato.digital",
+    displayName: "Open Campus Codex",
+    blockExplorerUrl: "https://opencampus-codex.blockscout.com/",
+    ticker: "EDU",
+    tickerName: "EDU",
     logo: "https://cryptologos.cc/logos/flare-flr-logo.png",
 };
-const chainId = 78600;
+const chainId = 656476;
+
+
+
 const privateKeyProvider = new EthereumPrivateKeyProvider({
     config: { chainConfig },
 });
@@ -114,7 +126,7 @@ function App() {
 
         try {
             uiConsole("Sending transaction...");
-            const txHash = await sendSmartTransaction("0x0B3074cd5891526420d493B13439f3D4b8be6144", BigInt("0"), "0x");
+            const txHash = await sendSmartTransaction("0x", BigInt("0"), "0x");
             uiConsole("Transaction Receipt:", txHash);
         } catch (error) {
             console.error("Error sending transaction:", error);
